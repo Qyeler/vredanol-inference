@@ -1,0 +1,68 @@
+[project]
+name = "vredanol-inference"
+version = "0.1.0"
+description = "Inference service for ONNX classification"
+authors = [{ name = "Fabul0n", email = "fabulon@mail.ru" }]
+readme = "README.md"
+requires-python = ">=3.12, <4"
+dependencies = [
+    "celery[redis]>=5.4.0",
+    "pillow>=11.3.0",
+    "numpy>=2.3.0",
+    "onnxruntime>=1.23.0",
+    "pydantic>=2.11.7",
+    "pydantic-settings>=2.13.1",
+    "structlog>=25.5.0",
+]
+
+[dependency-groups]
+dev = [
+    "httpx>=0.28.1",
+    "mypy>=1.20.1",
+    "pre-commit>=4.3.0",
+    "pytest>=9.0.3",
+    "pytest-asyncio>=1.0.0",
+    "ruff>=0.15.11",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.sdist]
+include = ["src/"]
+
+[tool.hatch.build.targets.wheel]
+include = ["src/"]
+packages = ["src"]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 120
+fix = true
+
+[tool.ruff.lint]
+select = ["F", "E", "W", "C", "UP", "I"]
+ignore = ["E402", "UP006", "UP007", "E741"]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401", "F403"]
+
+[tool.ruff.lint.mccabe]
+max-complexity = 24
+
+[tool.pytest.ini_options]
+markers = [
+    "unit: fast tests with mocked collaborators",
+    "integration: tests that touch external services or real infrastructure",
+]
+
+[tool.mypy]
+python_version = "3.12"
+warn_return_any = true
+warn_unused_configs = true
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "src.app.*"
+disallow_untyped_defs = true

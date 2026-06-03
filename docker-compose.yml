@@ -1,0 +1,18 @@
+services:
+  inference-worker:
+    build: .
+    image: vredanol_inference
+    command: sh -c "celery -A src.app.core.celery.settings worker -Q ${CELERY_INFERENCE_QUEUE:-inference} -l INFO"
+    env_file:
+      - ./src/.env.example
+    environment:
+      FILE_LOG_DIR: /home/python/logs/celery
+      CELERY_INFERENCE_QUEUE: inference
+    volumes:
+      - ./logs:/home/python/logs
+    networks:
+      - vredanol_net
+
+networks:
+  vredanol_net:
+    external: true
