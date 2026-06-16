@@ -4,7 +4,8 @@ services:
     image: vredanol_inference
     command: sh -c "celery -A src.app.core.celery.settings worker -Q ${CELERY_INFERENCE_QUEUE:-inference} -l INFO"
     env_file:
-      - ./src/.env.example
+      - ./src/.env
+    cpus: 4
     environment:
       FILE_LOG_DIR: /home/python/logs/celery
       CELERY_INFERENCE_QUEUE: inference
