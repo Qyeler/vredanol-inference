@@ -1,0 +1,72 @@
+@startuml
+title Vredanol Service Flow
+
+actor "Пользователь" as User
+participant "Frontend" as FE
+participant "Backend API" as API
+participant "Auth Service" as Auth
+participant "Profile Service" as Profile
+participant "Barcode Service" as Barcode
+queue "Redis Queue" as Redis
+participant "Inference Worker" as Worker
+participant "ONNX Runtime" as ONNX
+participant "Analytics Service" as Analytics
+
+User -> FE: Open app
+FE -> API: Request session
+API -> Auth: Validate token / credentials
+Auth --> API: Auth result
+
+alt Authorized
+  API -> Profile: Load user profile
+  Profile --> API: Profile, history, settings
+  API --> FE: User workspace
+
+  User -> FE: Upload photo or scan barcode
+  FE -> API: Send image/barcode payload
+
+  alt Barcode provided
+    API -> Barcode: Find product by barcode
+    Barcode --> API: Product card or not found
+
+    alt Product found
+      API -> Analytics: Track barcode recognition
+      API --> FE: Product card
+    else Product not found
+      API -> Redis: Enqueue inference.classify
+      Redis --> Worker: Deliver classification task
+      Worker -> Worker: Decode base64 image
+      Worker -> Worker: Resize, crop, normalize
+      Worker -> ONNX: Run ConvNeXt Tiny model
+      ONNX --> Worker: Logits
+      Worker -> Worker: Softmax and top-k sorting
+      Worker --> API: Top-k predictions
+      API -> Analytics: Track ML fallback
+      API --> FE: Recognition variants
+    end
+
+  else Image only
+    API -> Redis: Enqueue inference.classify
+    Redis --> Worker: Deliver classification task
+    Worker -> Worker: Decode base64 image
+    Worker -> Worker: Resize, crop, normalize
+    Worker -> ONNX: Run ConvNeXt Tiny model
+    ONNX --> Worker: Logits
+    Worker -> Worker: Softmax and top-k sorting
+    Worker --> API: Top-k predictions
+    API -> Analytics: Track image recognition
+    API --> FE: Recognition variants
+  end
+
+  User -> FE: Confirm or edit product data
+  FE -> API: Save confirmed/edited card
+  API -> Profile: Save to user history/profile
+  API -> Analytics: Track correction and final label
+  API --> FE: Saved result
+
+else Unauthorized
+  API --> FE: Authorization required
+  FE --> User: Show login screen
+end
+
+@enduml
