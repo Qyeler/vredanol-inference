@@ -47,6 +47,41 @@ models/
   food_classes.txt
 ```
 
+## Training Datasets
+
+Use datasets according to the model scenario you want to train or fine-tune.
+
+### Food Classification
+
+- [Food-101](https://data.vision.ee.ethz.ch/cvl/datasets_extra/food-101/) - a strong baseline dataset for food image classification. It contains 101 food categories and 101,000 images. Use it for training or benchmarking a general food classifier.
+- [Open Food Facts](https://world.openfoodfacts.org/) - an open food products database with product metadata, barcodes, labels, nutrition facts, and user-contributed product images. It is useful for product-oriented food recognition and barcode-to-product enrichment.
+- [Open Food Facts Images on AWS Open Data](https://registry.opendata.aws/openfoodfacts-images/) - image dataset for Open Food Facts products. Use it when training models on real product packaging and labels.
+
+### Grocery And Product Recognition
+
+- [Grocery Store Dataset](https://github.com/marcusklasson/GroceryStoreDataset) - natural images of grocery items taken in stores. Useful for grocery classification and fine-grained product/category recognition.
+- [Object Detection Grocery Products](https://github.com/tobiagru/ObjectDetectionGroceryProducts) - grocery product detection dataset with shelf/product images. Useful when the model needs to detect products inside a larger scene.
+- [Amazon Berkeley Objects](https://amazon-berkeley-objects.s3.amazonaws.com/index.html) - large product-image dataset with product metadata and multiple images per item. Useful for general product recognition experiments.
+
+### Shelf Detection And Retail Scenes
+
+- [SKU-110K](https://github.com/eg4000/sku110k_cvpr19) - retail shelf dataset for dense product detection. Use it if the target task is not just classification, but finding product regions on crowded shelves.
+
+### Barcode-Related Data
+
+- [Open Food Facts Product Database](https://huggingface.co/datasets/openfoodfacts/product-database) - product metadata with barcodes. Useful for matching scanned barcodes to product names, brands, ingredients, and nutrition data.
+- [OCR Barcodes Detection](https://huggingface.co/datasets/UniqueData/ocr-barcodes-detection) - barcode detection/OCR dataset with grocery goods and annotated barcode regions. Useful if the service needs to detect barcode areas from images before decoding them.
+
+### Recommended Training Strategy
+
+1. Start with Food-101 for food category classification.
+2. Fine-tune on grocery/product photos closer to the target frontend use case.
+3. Use Open Food Facts for barcode mapping and product metadata.
+4. Use SKU-110K or grocery detection datasets if the model must detect products inside shelves or complex scenes.
+5. Keep a private validation set from real user-like photos to measure product quality, not only benchmark accuracy.
+
+Always check dataset licenses and attribution requirements before using a dataset in production.
+
 ## Environment
 
 Create `src/.env` from `src/.env.example` and set the model paths:
