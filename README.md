@@ -28,6 +28,8 @@ In the full Vredanol product, inference can be used together with:
 
 See [SERVICE_PRESENTATION.md](SERVICE_PRESENTATION.md) for a presentation-style product and technical overview.
 
+See [docs/service-flow.md](docs/service-flow.md) for the UML-style service flow diagram.
+
 ## Model Files
 
 Runtime model artifacts are expected in `models/` and are intentionally not committed to Git because model weights are large.
