@@ -30,6 +30,8 @@ See [SERVICE_PRESENTATION.md](SERVICE_PRESENTATION.md) for a presentation-style 
 
 See [docs/service-flow.md](docs/service-flow.md) for the UML-style service flow diagram.
 
+See [docs/ml-defense-questions.md](docs/ml-defense-questions.md) for ML theory, project-specific defense questions, expected answers, and practical checks.
+
 ## Model Files
 
 Runtime model artifacts are expected in `models/` and are intentionally not committed to Git because model weights are large.
